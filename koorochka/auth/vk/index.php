@@ -1,33 +1,39 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+<?
+use Bitrix\Main\Loader,
+    Bitrix\Main\Web\HttpClient;
+/**
+ * @global CMain $APPLICATION
+ */
+$_SERVER["DOCUMENT_ROOT"] = "/home/bitrix/www";
+$DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
+define('NO_AGENT_CHECK', true);
+define("NO_KEEP_STATISTIC", true);
+define("NOT_CHECK_PERMISSIONS",true);
 
-Test
-<script>
-
-    setTimeout(function () {
-        alert("Add script to header");
-
-        var script = document.createElement('script');
-        script.src = "https://vk.com/js/api/openapi.js";
-        document.getElementsByTagName('head')[0].appendChild(script);
-
-        script = document.createElement('script');
-        script.src = "https://diamondstar.plus/local/templates/diamond.lite/js/jquery-latest.min.js";
-        document.getElementsByTagName('head')[0].appendChild(script);
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 
 
 
+$url = "https://vk.com/js/api/openapi.js";
 
-    }, 6000);
 
-</script>
-</body>
-</html>
+$sHost = COption::GetOptionString("main", "update_site", "www.bitrixsoft.com");
+$proxyAddr = COption::GetOptionString("main", "update_site_proxy_addr", "");
+$proxyPort = COption::GetOptionString("main", "update_site_proxy_port", "");
+$proxyUserName = COption::GetOptionString("main", "update_site_proxy_user", "");
+$proxyPassword = COption::GetOptionString("main", "update_site_proxy_pass", "");
+
+/*
+d($sHost);
+d($proxyAddr);
+d($proxyPort);
+d($proxyUserName);
+d($proxyPassword);
+*/
+
+$http = new HttpClient();
+$http->setProxy($proxyAddr, $proxyPort, $proxyUserName, $proxyPassword);
+$http->get($url);
+
+$data = $http->getResult();
+echo $data;
